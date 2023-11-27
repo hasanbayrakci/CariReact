@@ -25,10 +25,12 @@ namespace CariReact.Controllers
             return Ok(customer.ToArray());
         }
 
-        [HttpGet("GetCustomer")]
-        public ActionResult<IEnumerable<string>> GetCustomer()
+        [HttpPost("Create")]
+        public IActionResult Create([FromBody] Customer customer)
         {
-            return new string[] { "Value1", "Value2" };
+            _db.Customer.Add(customer);
+            _db.SaveChanges();
+            return Ok("Başarılı");
         }
 
     }
