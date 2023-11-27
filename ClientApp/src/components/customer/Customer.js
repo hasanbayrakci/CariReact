@@ -31,10 +31,10 @@ export class Customer extends Component {
                         <th><Button color="primary" size="sm" onClick={() => this.createClick()}>Ekle</Button></th>
                     </tr>
                     <tr>
-                        <th>Id</th>
-                        <th>Unvan</th>
-                        <th>Adres</th>
-                        <th>#</th>
+                        <th className="col-1">Id</th>
+                        <th className="col-4">Unvan</th>
+                        <th className="col-4">Adres</th>
+                        <th className="col-3">#</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -46,7 +46,7 @@ export class Customer extends Component {
                             <td>
                                 <Button color="primary" size="sm">Görüntüle</Button>{' '}
                                 <Button color="warning" size="sm" onClick={() => this.editClick()}>Düzenle</Button>{' '}
-                                <Button color="danger" size="sm">Sil</Button>
+                                <Button color="danger" size="sm" onClick={() => this.deleteClick(item.id)}>Sil</Button>
                             </td>
                         </tr>
                     )}
@@ -187,6 +187,33 @@ export class Customer extends Component {
         const response = await fetch('Customer');
         const data = await response.json();
         this.setState({ customers: data, loading: false });
+    }
+
+    deleteClick(id) {
+        if (window.confirm("Bu müşteriyi silmek istediğinizden emin misiniz?")) {
+            this.deleteCustomer(id);
+        }
+    }
+
+    async deleteCustomer(id) {
+        try {
+            const response = await fetch(`Customer/Delete/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (response.ok) {
+                console.log('Müşteri başarıyla silindi');
+                this.setState({ loading: true });
+                this.getCustomerData();
+            } else {
+                console.error('Müşteri silinirken bir hata oluştu');
+            }
+        } catch (error) {
+            console.error('Bir hata oluştu:', error);
+        }
     }
 
 }

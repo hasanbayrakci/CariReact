@@ -21,7 +21,7 @@ namespace CariReact.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var customer = _db.Customer;
+            var customer = _db.Customer.Take(10).OrderByDescending(x => x.Id);
             return Ok(customer.ToArray());
         }
 
@@ -31,6 +31,19 @@ namespace CariReact.Controllers
             _db.Customer.Add(customer);
             _db.SaveChanges();
             return Ok("Başarılı");
+        }
+
+        [HttpPost("Delete/{id}")]
+        public IActionResult Delete(int id)
+        {
+            var customer = _db.Customer.Find(id);
+            if (customer != null)
+            {
+                _db.Customer.Remove(customer);
+                _db.SaveChanges();
+                return Ok("Başarılı");
+            }
+            return BadRequest();
         }
 
     }
