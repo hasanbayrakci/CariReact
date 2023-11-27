@@ -1,5 +1,5 @@
 import { Home } from "./components/Home";
-import { Customer } from "./components/Customer";
+import { Customer } from "./components/customer/Customer";
 
 const AppRoutes = [
   {
