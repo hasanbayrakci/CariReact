@@ -12,6 +12,7 @@ export class Customer extends Component {
             modal: false,
             modalTitle: '',
             modalContent: null,
+            modalForm: true,
             unvan: '',
             telefon: '',
             adres: '',
@@ -48,7 +49,7 @@ export class Customer extends Component {
                             <td>{item.telefon}</td>
                             <td>{item.adres}</td>
                             <td>
-                                <Button color="primary" size="sm" onClick={() => this.detailClick()}>Görüntüle</Button>{' '}
+                                <Button color="primary" size="sm" onClick={() => this.detailClick(item.id)}>Görüntüle</Button>{' '}
                                 <Button color="warning" size="sm" onClick={() => this.editClick(item.id)}>Düzenle</Button>{' '}
                                 <Button color="danger" size="sm" onClick={() => this.deleteClick(item.id)}>Sil</Button>
                             </td>
@@ -61,7 +62,7 @@ export class Customer extends Component {
 
     render() {
 
-        const { modal, modalTitle, modalContent } = this.state;
+        const { modal, modalTitle, modalContent, modalForm } = this.state;
 
         let contents = this.state.loading
             ? <p><em>Yükleniyor...</em></p>
@@ -76,12 +77,20 @@ export class Customer extends Component {
                         { modalContent }
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="secondary" onClick={() => this.toggle()}>
-                            İptal
-                        </Button>{' '}
-                        <Button color="primary" onClick={() => this.handleSubmit()}>
-                            Kaydet
-                        </Button>
+                        {modalForm ? (
+                            <>
+                                <Button color="secondary" onClick={() => this.toggle()}>
+                                    İptal
+                                </Button>{' '}
+                                <Button color="primary" onClick={() => this.handleSubmit()}>
+                                    Kaydet
+                                </Button>
+                            </>
+                        ): (
+                            <Button color="secondary" onClick={() => this.toggle()}>
+                                Kapat
+                            </Button>
+                        )}
                     </ModalFooter>
                 </Modal>
             </div>
@@ -103,6 +112,7 @@ export class Customer extends Component {
             unvan: '',
             telefon: '',
             adres: '',
+            modalForm: true,
             formUrl: 'Customer/Create'
         }, () => {
             this.toggleAndSetModal("Yeni Kayıt", this.formContent());
@@ -158,6 +168,7 @@ export class Customer extends Component {
     async editClick(id) {
         await this.detailCustomer(id);
         this.setState({
+            modalForm: true,
             formUrl: 'Customer/Edit/' + id
         }, () => {
             this.toggleAndSetModal("Düzenle", this.formContent());
@@ -252,7 +263,8 @@ export class Customer extends Component {
                     unvan: data.unvan,
                     telefon: data.telefon,
                     adres: data.adres,
-                    test: data.unvan
+                    vergiDairesi: data.vergiDairesi,
+                    vergiNo: data.vergiNo
                 });
                 
             } else {
@@ -261,6 +273,47 @@ export class Customer extends Component {
         } catch (error) {
             console.error('Bir hata oluştu:', error);
         }
+    }
+
+    async detailClick(id) {
+        await this.detailCustomer(id)
+        this.setState({
+            modalForm: false,
+            formUrl: ''
+        }, () => {
+            this.toggleAndSetModal("Detay", this.detailContent());
+        });
+        
+    }
+
+    detailContent() {
+        const { unvan, telefon, adres, vergiDairesi, vergiNo } = this.state;
+        return (
+            <div>
+                <Table hover responsive striped bordered>
+                    <tr>
+                        <th className="col-3">Unvan</th>
+                        <td>{ unvan }</td>
+                    </tr>
+                    <tr>
+                        <th>Telefon</th>
+                        <td>{ telefon }</td>
+                    </tr>
+                    <tr>
+                        <th>Vergi Dairesi</th>
+                        <td>{ vergiDairesi }</td>
+                    </tr>
+                    <tr>
+                        <th>Vergi No</th>
+                        <td>{ vergiNo }</td>
+                    </tr>
+                    <tr>
+                        <th>Adres</th>
+                        <td>{ adres }</td>
+                    </tr>
+                </Table>
+            </div>
+        );
     }
 
 }
