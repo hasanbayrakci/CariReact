@@ -46,5 +46,28 @@ namespace CariReact.Controllers
             return BadRequest();
         }
 
+        [HttpPost("Edit/{id}")]
+        public IActionResult Edit(int id, [FromBody] Customer customer)
+        {
+            try
+            {
+                customer.Id = id;
+                _db.Customer.Update(customer);
+                _db.SaveChanges();
+                return Ok("Başarılı");
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpGet("Detail/{id}")]
+        public IActionResult Detail(int id)
+        {
+            var customer = _db.Customer.Find(id);
+            return Ok(customer);
+        }
+
     }
 }

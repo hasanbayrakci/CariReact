@@ -14,7 +14,9 @@ export class Customer extends Component {
             modalContent: null,
             unvan: '',
             telefon: '',
-            adres: ''
+            adres: '',
+            formUrl: '',
+            test: ''
         };
     }
 
@@ -32,8 +34,9 @@ export class Customer extends Component {
                     </tr>
                     <tr>
                         <th className="col-1">Id</th>
-                        <th className="col-4">Unvan</th>
-                        <th className="col-4">Adres</th>
+                        <th className="col-3">Unvan</th>
+                        <th className="col-2">Telefon</th>
+                        <th className="col-3">Adres</th>
                         <th className="col-3">#</th>
                     </tr>
                 </thead>
@@ -42,10 +45,11 @@ export class Customer extends Component {
                         <tr key={item.id}>
                             <td>{item.id}</td>
                             <td>{item.unvan}</td>
+                            <td>{item.telefon}</td>
                             <td>{item.adres}</td>
                             <td>
-                                <Button color="primary" size="sm">Görüntüle</Button>{' '}
-                                <Button color="warning" size="sm" onClick={() => this.editClick()}>Düzenle</Button>{' '}
+                                <Button color="primary" size="sm" onClick={() => this.detailClick()}>Görüntüle</Button>{' '}
+                                <Button color="warning" size="sm" onClick={() => this.editClick(item.id)}>Düzenle</Button>{' '}
                                 <Button color="danger" size="sm" onClick={() => this.deleteClick(item.id)}>Sil</Button>
                             </td>
                         </tr>
@@ -95,14 +99,18 @@ export class Customer extends Component {
     }
 
     createClick() {
-        this.toggle();
         this.setState({
-            modalTitle: "Yeni Kayıt",
-            modalContent: this.formContent()
+            unvan: '',
+            telefon: '',
+            adres: '',
+            formUrl: 'Customer/Create'
+        }, () => {
+            this.toggleAndSetModal("Yeni Kayıt", this.formContent());
         });
     }
 
     formContent() {
+        const { unvan, telefon, adres } = this.state;
         return (
             <div>
                 <Form>
@@ -114,6 +122,7 @@ export class Customer extends Component {
                             name="Unvan"
                             placeholder="Unvan"
                             type="text"
+                            defaultValue={ unvan }
                             onChange={(e) => this.handleChange(e, 'unvan')}
                         />
                     </FormGroup>
@@ -125,6 +134,7 @@ export class Customer extends Component {
                             name="Telefon"
                             placeholder="Telefon"
                             type="text"
+                            defaultValue={ telefon }
                             onChange={(e) => this.handleChange(e, 'telefon')}
                         />
                     </FormGroup>
@@ -136,6 +146,7 @@ export class Customer extends Component {
                             name="Adres"
                             placeholder="Adres"
                             type="text"
+                            defaultValue={ adres }
                             onChange={(e) => this.handleChange(e, 'adres')}
                         />
                     </FormGroup>
@@ -144,25 +155,26 @@ export class Customer extends Component {
         );
     }
 
-    editClick() {
-        this.toggle();
+    async editClick(id) {
+        await this.detailCustomer(id);
         this.setState({
-            modalTitle: "Düzenle",
-            modalContent: this.formContent()
+            formUrl: 'Customer/Edit/' + id
+        }, () => {
+            this.toggleAndSetModal("Düzenle", this.formContent());
         });
     }
 
     handleChange = (e, key) => {
         this.setState({
             [key]: e.target.value
-        });
+        }); 
     };
 
     handleSubmit = async () => {
-        const { unvan, telefon, adres } = this.state;
+        const { unvan, telefon, adres, formUrl } = this.state;
 
         try {
-            const response = await fetch('Customer/Create', {
+            const response = await fetch(formUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -210,6 +222,41 @@ export class Customer extends Component {
                 this.getCustomerData();
             } else {
                 console.error('Müşteri silinirken bir hata oluştu');
+            }
+        } catch (error) {
+            console.error('Bir hata oluştu:', error);
+        }
+    }
+
+    toggleAndSetModal(title, content) {
+        this.toggle();
+        this.setState({
+            modalTitle: title,
+            modalContent: content,
+        });
+    }
+
+    async detailCustomer(id) {
+        try {
+            const response = await fetch(`Customer/Detail/${id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (response.ok) {
+                console.log('Müşteri bilgisi başarıyla alındı');
+                const data = await response.json();
+                await this.setState({
+                    unvan: data.unvan,
+                    telefon: data.telefon,
+                    adres: data.adres,
+                    test: data.unvan
+                });
+                
+            } else {
+                console.error('Müşteri bilgisi alınırken bir hata oluştu');
             }
         } catch (error) {
             console.error('Bir hata oluştu:', error);

@@ -9,7 +9,7 @@ const AppRoutes = [
   {
     path: '/firma',
     element: <Customer />
-  }
+    }
 ];
 
 export default AppRoutes;
