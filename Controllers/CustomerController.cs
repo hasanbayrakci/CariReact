@@ -69,5 +69,11 @@ namespace CariReact.Controllers
             return Ok(customer);
         }
 
+        [HttpGet("Hasan")]
+        public IActionResult Hasan()
+        {
+            return Ok("dfsdf");
+        }
+
     }
 }

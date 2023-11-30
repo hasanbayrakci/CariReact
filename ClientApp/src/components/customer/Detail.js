@@ -1,5 +1,7 @@
 ﻿import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { CariHareket } from './CariHareket';
+
 
 const Detail = () => {
     const { id } = useParams();
@@ -88,16 +90,7 @@ const Detail = () => {
                             </div>
                         </div>
                         <div class="col-8">
-                            <div class="card">
-                                <div class="card-header">
-                                    Cari Hareket
-                                </div>
-                                <div class="card-body">
-                                    <p class="card-text">
-                                        xdfdfg
-                                    </p>
-                                </div>
-                            </div>
+                            <CariHareket />
                             <hr></hr>
                             <div class="card">
                                 <div class="card-header">
