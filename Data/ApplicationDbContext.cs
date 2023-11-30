@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using CariReact.Models;
 
 namespace CariReact.Data
 {
@@ -12,6 +13,8 @@ namespace CariReact.Data
         }
 
         public DbSet<CariReact.Models.Customer> Customer { get; set; } = default!;
+
+        public DbSet<CariReact.Models.CariHareket> CariHareket { get; set; } = default!;
 
     }
 }

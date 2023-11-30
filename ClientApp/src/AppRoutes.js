@@ -14,7 +14,7 @@ const AppRoutes = [
   {
     path: '/firma/detail/:id',
     element: <Detail />
-  }
+    }
 ];
 
 export default AppRoutes;
