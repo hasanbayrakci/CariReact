@@ -1,5 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { Table, Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Link } from 'react-router-dom'
 
 export class Customer extends Component {
     static displayName = Customer.name;
@@ -15,6 +16,8 @@ export class Customer extends Component {
             modalForm: true,
             unvan: '',
             telefon: '',
+            vergiDairesi: '',
+            vergiNo: '',
             adres: '',
             formUrl: '',
             test: ''
@@ -49,7 +52,7 @@ export class Customer extends Component {
                             <td>{item.telefon}</td>
                             <td>{item.adres}</td>
                             <td>
-                                <Button color="primary" size="sm" onClick={() => this.detailClick(item.id)}>Görüntüle</Button>{' '}
+                                <Link to={ "/firma/detail/" + item.id }><Button color="primary" size="sm">Görüntüle</Button></Link>{' '}
                                 <Button color="warning" size="sm" onClick={() => this.editClick(item.id)}>Düzenle</Button>{' '}
                                 <Button color="danger" size="sm" onClick={() => this.deleteClick(item.id)}>Sil</Button>
                             </td>
@@ -120,7 +123,7 @@ export class Customer extends Component {
     }
 
     formContent() {
-        const { unvan, telefon, adres } = this.state;
+        const { unvan, telefon, adres, vergiDairesi, vergiNo } = this.state;
         return (
             <div>
                 <Form>
@@ -146,6 +149,30 @@ export class Customer extends Component {
                             type="text"
                             defaultValue={ telefon }
                             onChange={(e) => this.handleChange(e, 'telefon')}
+                        />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="VergiDairesi">
+                            Vergi Dairesi
+                        </Label>
+                        <Input
+                            name="VergiDairesi"
+                            placeholder="Vergi Dairesi"
+                            type="text"
+                            defaultValue={vergiDairesi}
+                            onChange={(e) => this.handleChange(e, 'vergiDairesi')}
+                        />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="VergiNo">
+                            Vergi No
+                        </Label>
+                        <Input
+                            name="VergiNo"
+                            placeholder="Vergi No"
+                            type="text"
+                            defaultValue={vergiNo}
+                            onChange={(e) => this.handleChange(e, 'vergiNo')}
                         />
                     </FormGroup>
                     <FormGroup>
@@ -182,7 +209,7 @@ export class Customer extends Component {
     };
 
     handleSubmit = async () => {
-        const { unvan, telefon, adres, formUrl } = this.state;
+        const { unvan, telefon, adres, vergiDairesi, vergiNo, formUrl } = this.state;
 
         try {
             const response = await fetch(formUrl, {
@@ -190,7 +217,7 @@ export class Customer extends Component {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ unvan, telefon, adres }),
+                body: JSON.stringify({ unvan, telefon, adres, vergiDairesi, vergiNo }),
             });
 
             if (response.ok) {
