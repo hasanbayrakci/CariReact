@@ -1,5 +1,6 @@
 import { Home } from "./components/Home";
 import { Customer } from "./components/customer/Customer";
+import  Detail  from "./components/customer/Detail";
 
 const AppRoutes = [
   {
@@ -9,7 +10,11 @@ const AppRoutes = [
   {
     path: '/firma',
     element: <Customer />
-    }
+  },
+  {
+    path: '/firma/detail/:id',
+    element: <Detail />
+  }
 ];
 
 export default AppRoutes;
