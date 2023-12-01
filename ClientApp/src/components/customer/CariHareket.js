@@ -9,9 +9,11 @@ const CariHareket = ({ customerId }) => {
     const [islemTuru, setIslemTuru] = useState('');
     const [tutar, setTutar] = useState('');
     const [formUrl, setFormUrl] = useState('');
+    const [bakiye, setBakiye] = useState(0);
 
     useEffect(() => {
         getCariHareketData();
+        getCariBakiye()
     }, [customerId]);
 
     const getCariHareketData = async () => {
@@ -43,7 +45,7 @@ const CariHareket = ({ customerId }) => {
         toggleAndSetModal('Düzenle');
     };
 
-    const deleteCustomer = async(id) => {
+    const deleteCariHareket = async(id) => {
         try {
             const response = await fetch('CariHareket/Delete/' + id, {
                 method: 'POST',
@@ -56,6 +58,7 @@ const CariHareket = ({ customerId }) => {
                 console.log('Cari hareket başarıyla silindi');
                 setLoading(true);
                 getCariHareketData();
+                getCariBakiye();
             } else {
                 console.error('Cari hareket silinirken bir hata oluştu');
             }
@@ -66,9 +69,20 @@ const CariHareket = ({ customerId }) => {
 
     const deleteClick = (id) => {
         if (window.confirm("Bu hareketi silmek istediğinizden emin misiniz?")) {
-            deleteCustomer(id);
+            deleteCariHareket(id);
         }
     }
+
+    const getCariBakiye = async () => {
+        try {
+            const response = await fetch('CariHareket/GetCariBakiye/' + customerId,);
+            const data = await response.json();
+            setBakiye(data)
+            setLoading(false);
+        } catch (error) {
+            console.error('Veri çekme hatası:', error);
+        }
+    };
 
     const renderCariHareketTable = (caris) => {
         return (
@@ -133,6 +147,7 @@ const CariHareket = ({ customerId }) => {
                 toggle();
                 setLoading(true);
                 getCariHareketData();
+                getCariBakiye();
             } else {
                 console.error('Veri gönderme hatası');
             }
@@ -163,6 +178,9 @@ const CariHareket = ({ customerId }) => {
                     <p className="card-text">
                         {loading ? <em>Yükleniyor...</em> : renderCariHareketTable(caris)}
                     </p>
+                </div>
+                <div className="card-footer text-end">
+                    <h5>Bakiye: <span class="badge bg-primary">{ bakiye } TL</span></h5>
                 </div>
             </div>
             <Modal isOpen={modal} toggle={toggle}>

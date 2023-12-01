@@ -103,5 +103,14 @@ namespace CariReact.Controllers
             return BadRequest();
         }
 
+        [HttpGet("GetCariBakiye/{id}")]
+        public IActionResult GetCariBakiye(int id)
+        {
+            var giris = _context.CariHareket.Where(x => x.CustomerId == id && x.IslemTuru == 1).Sum(x => x.Tutar);
+            var cikis = _context.CariHareket.Where(x => x.CustomerId == id && x.IslemTuru == 2).Sum(x => x.Tutar);
+
+            return Ok(giris-cikis);
+        }
+
     }
 }
